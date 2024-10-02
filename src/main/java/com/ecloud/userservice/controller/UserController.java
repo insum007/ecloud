@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecloud.userservice.dto.UserRequestDTO;
 import com.ecloud.userservice.dto.UserResponseDTO;
-import com.ecloud.userservice.entity.User;
 import com.ecloud.userservice.service.UserService;
 
 import jakarta.validation.Valid;
