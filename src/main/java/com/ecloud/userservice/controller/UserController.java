@@ -1,4 +1,4 @@
-package controller;
+package com.ecloud.userservice.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dto.UserRequestDTO;
-import entity.User;
+import com.ecloud.userservice.dto.UserRequestDTO;
+import com.ecloud.userservice.dto.UserResponseDTO;
+import com.ecloud.userservice.entity.User;
+import com.ecloud.userservice.service.UserService;
+
 import jakarta.validation.Valid;
-import service.UserService;
 
 /**
  * 
@@ -35,26 +37,27 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<User> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-		User createdUser = userService.createUser(userRequestDTO);
+	public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+		UserResponseDTO createdUser = userService.createUser(userRequestDTO);
 		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers() {
-		List<User> response = userService.getAllUsers();
+	public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+		List<UserResponseDTO> response = userService.getAllUsers();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
-		Optional<User> response = userService.getUserById(id);
+	public ResponseEntity<Optional<UserResponseDTO>> getUserById(@PathVariable Long id) {
+		Optional<UserResponseDTO> response = userService.getUserById(id);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
-		User response = userService.updateUser(id, userRequestDTO);
+	public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id,
+			@RequestBody UserRequestDTO userRequestDTO) {
+		UserResponseDTO response = userService.updateUser(id, userRequestDTO);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -65,7 +68,7 @@ public class UserController {
 		if (isDeleted) {
 			return ResponseEntity.noContent().build();
 		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 }

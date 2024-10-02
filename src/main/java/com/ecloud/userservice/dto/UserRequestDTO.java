@@ -1,4 +1,4 @@
-package dto;
+package com.ecloud.userservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
