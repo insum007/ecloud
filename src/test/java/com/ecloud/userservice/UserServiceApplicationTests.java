@@ -1,4 +1,4 @@
-package com.ecloud.user_service;
+package com.ecloud.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

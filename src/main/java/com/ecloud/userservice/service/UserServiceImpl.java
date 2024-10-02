@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ecloud.userservice.dto.UserRequestDTO;
 import com.ecloud.userservice.dto.UserResponseDTO;
 import com.ecloud.userservice.entity.User;
+import com.ecloud.userservice.exception.UserNotFoundException;
 import com.ecloud.userservice.mapper.UserMapper;
 import com.ecloud.userservice.mapper.UserResponseMapper;
 import com.ecloud.userservice.repository.UserRepository;
@@ -37,36 +38,29 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserResponseDTO> getAllUsers() {
-	    List<User> users = userRepository.findAll();
-
-	    // Use the UserResponseMapper to convert the list of User entities to UserResponseDTO
-	    return users.stream()
-	                .map(UserResponseMapper::toResponseDTO)
-	                .collect(Collectors.toList());
+		List<User> users = userRepository.findAll();
+		// Use the UserResponseMapper to convert the list of User entities to
+		return users.stream().map(UserResponseMapper::toResponseDTO).collect(Collectors.toList());
 	}
 
 	@Override
 	public Optional<UserResponseDTO> getUserById(Long id) {
-	    return userRepository.findById(id)
-	                         .map(UserResponseMapper::toResponseDTO);
+		return userRepository.findById(id).map(UserResponseMapper::toResponseDTO);
 	}
-	
+
 	@Override
 	public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
 		String hashedPassword = UserMapper.hashPasswordSHA256(userRequestDTO.getPassword());
-		Optional<User> existingUser = userRepository.findById(id);
-		if (existingUser.isPresent()) {
-			User updatedUser = existingUser.get();
-			updatedUser.setUsername(userRequestDTO.getUsername());
-			if (!userRequestDTO.getPassword().isEmpty()) {
-				updatedUser.setPassword(hashedPassword);
-			}
-			updatedUser.setActive(userRequestDTO.isActive());
-			userRepository.save(updatedUser);
-			UserResponseDTO userResponseDTO = UserResponseMapper.toResponseDTO(updatedUser);
-			return userResponseDTO;
+		User updatedUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)); 
+
+		updatedUser.setUsername(userRequestDTO.getUsername());
+		if (!userRequestDTO.getPassword().isEmpty()) {
+			updatedUser.setPassword(hashedPassword);
 		}
-		return null;
+		updatedUser.setActive(userRequestDTO.isActive());
+		userRepository.save(updatedUser);
+
+		return UserResponseMapper.toResponseDTO(updatedUser);
 	}
 
 	@Override
